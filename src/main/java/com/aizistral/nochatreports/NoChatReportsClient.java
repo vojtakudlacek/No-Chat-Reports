@@ -1,10 +1,12 @@
 package com.aizistral.nochatreports;
 
+import java.awt.*;
 import java.util.List;
 
 import com.aizistral.nochatreports.core.NoReportsConfig;
 import com.aizistral.nochatreports.core.ServerSafetyState;
 import com.aizistral.nochatreports.core.ServerSafetyLevel;
+import com.aizistral.nochatreports.gui.BetterPauseScreen;
 import com.aizistral.nochatreports.gui.UnsafeServerScreen;
 import com.aizistral.nochatreports.mixins.client.AccessorDisconnectedScreen;
 import com.aizistral.nochatreports.network.ClientChannelHandler;
@@ -20,14 +22,12 @@ import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.ConnectScreen;
-import net.minecraft.client.gui.screens.DisconnectedScreen;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
+import net.minecraft.client.gui.screens.*;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
 /**
@@ -54,6 +54,11 @@ public class NoChatReportsClient implements ClientModInitializer {
 	}
 
 	private void onScreenInit(Minecraft client, Screen screen, int scaledWidth, int scaledHeight) {
+		//Pause screen
+		if(screen instanceof PauseScreen && ! (screen instanceof BetterPauseScreen)){
+			NoChatReports.LOGGER.info(screen.getTitle().getString());
+			client.setScreen(new BetterPauseScreen(true));
+		}
 		if (screen instanceof AccessorDisconnectedScreen dsc) {
 			if (screenOverride)
 				return;
